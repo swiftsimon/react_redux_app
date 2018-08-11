@@ -3,9 +3,10 @@ import { connect } from 'react-redux'
 import CounterWrapper from './Counter'
 import { mutations } from './store'
 import ShowCompleteToggleWrapper from './ShowCompleteToggle'
+import TodoInputWrapper from './TodoInput'
 
 
-export const App = ({ todos, doTodo }) => {  // export the 'dumb' App
+export const App = ({ todos, doTodo, deleteTodo }) => {  // export the 'dumb' App
     return (
         <div> This is the App
             <CounterWrapper />
@@ -15,13 +16,15 @@ export const App = ({ todos, doTodo }) => {  // export the 'dumb' App
                     { todos.map(item => {
                             return(
                                 <li key={ item.id }>
-                                    { item.name } - { item.done ? 'done :)' : <button onClick={ () => doTodo(item.id) }>DO</button> }
+                                    { item.name } - { item.done ? 'done :)' : <button class='btn btn-primary' onClick={ () => doTodo(item.id) }>DO</button> }
+                                    <button class='btn btn-secondary' onClick={ () => deleteTodo(item.id) }>delete</button>
                                 </li>
                             )
                         })
                     }
                 </ul>
             </div>
+            <TodoInputWrapper />
         </div>
     )
 }
@@ -36,8 +39,10 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({  // get methods into components
     doTodo(id) {
         const action = mutations.completeTodo(id)
-        console.log('now completing todo', id)
-        console.log("create action", action)
+        dispatch(action)
+    },
+    deleteTodo(id) {
+        const action = mutations.deleteTodo(id)
         dispatch(action)
     }
 })

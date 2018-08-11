@@ -24,12 +24,19 @@ const preloadedState = {
     }]
 }
 
-export const mutations = {
+export const mutations = {  // action creator
     completeTodo(id) {
-        return {id, type:'complete_todo'}
+        return { id, type:'complete_todo' }
     },
     toggleShowComplete() {
-        return {type:"toggle_show_complete"}
+        return { type:"toggle_show_complete" }
+    },
+    createTodo(name) {
+        const id = uuid()
+        return { id, type:'create_todo', name }
+    },
+    deleteTodo(id) {
+        return { id, type:'delete_todo'}
     }
 }
 
@@ -68,11 +75,14 @@ const reducer = combineReducers ({
         switch (action.type) {
             case 'complete_todo':
                 return todos.map(todo => todo.id === action.id ? { ...todo, done: true } : todo)
+            case 'create_todo':
+                return [...todos, {id: action.id, name: action.name, done: false}]
+            case 'delete_todo':
+                return todos.filter(todo => todo.id === action.id ? false : true)
         }
         return todos
     },
-    showComplete(showComplete = true, action) {
-
+    showComplete(showComplete = false, action) {
         switch (action.type) {
             case "toggle_show_complete":
                 return !showComplete
@@ -80,7 +90,5 @@ const reducer = combineReducers ({
     return showComplete
     }
 })
-
-
 
 export const store = createStore(reducer, preloadedState)
